@@ -10,7 +10,7 @@ public class TweetGenerator
     {
         if(args.length != 2)
         {
-            System.out.println("Error: Invalid parameters, usage: Java -jar TweetGeneratorServer.jar 6666 Tweets.txt");
+            System.out.println("Error: Invalid parameters, usage: Java -jar TweetGeneratorServer.jar <Listening Port> <File Name>");
         }
         else
         {
