@@ -18,8 +18,6 @@ public class TweetGenerator
             Socket incomingConnection = serverConnection.accept();
             BufferedWriter tweetOutput = new BufferedWriter(new OutputStreamWriter(incomingConnection.getOutputStream()));
 
-            System.out.println("Connected");
-
             String textFile = args[1];
             String line = "";
             int counter = 0;
@@ -30,7 +28,6 @@ public class TweetGenerator
                 {
                     if(counter > 0)
                     {
-                        System.out.println(line);
                         tweetOutput.write(line + "\r\n");
                         tweetOutput.flush();
                     }
