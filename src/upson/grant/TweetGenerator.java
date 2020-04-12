@@ -1,9 +1,6 @@
 package upson.grant;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -19,11 +16,12 @@ public class TweetGenerator
         {
             ServerSocket serverConnection = new ServerSocket(Integer.parseInt(args[0]));
             Socket incomingConnection = serverConnection.accept();
-            DataOutputStream tweetOutput = new DataOutputStream(incomingConnection.getOutputStream());
+            BufferedWriter tweetOutput = new BufferedWriter(new OutputStreamWriter(incomingConnection.getOutputStream()));
+
+            System.out.println("Connected");
 
             String textFile = args[1];
             String line = "";
-            //String cvsSplitBy = "\t";
             int counter = 0;
 
             try(BufferedReader reader = new BufferedReader(new FileReader(textFile)))
@@ -32,12 +30,13 @@ public class TweetGenerator
                 {
                     if(counter > 0)
                     {
-                        tweetOutput.writeUTF(line);
+                        System.out.println(line);
+                        tweetOutput.write(line + "\r\n");
+                        tweetOutput.flush();
                     }
 
                     counter++;
                     Thread.sleep(1000);
-                    tweetOutput.flush();
                 }
 
                 incomingConnection.close();
