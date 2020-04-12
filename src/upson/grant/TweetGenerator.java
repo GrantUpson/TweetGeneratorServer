@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class TweetGenerator
 {
-    public static void main(String[] args) throws IOException, InterruptedException
+    public static void main(String[] args)
     {
         if(args.length != 2)
         {
@@ -14,37 +14,41 @@ public class TweetGenerator
         }
         else
         {
-            ServerSocket serverConnection = new ServerSocket(Integer.parseInt(args[0]));
-            Socket incomingConnection = serverConnection.accept();
-            BufferedWriter tweetOutput = new BufferedWriter(new OutputStreamWriter(incomingConnection.getOutputStream()));
-
-            System.out.println("Connected");
-
-            String textFile = args[1];
-            String line = "";
-            int counter = 0;
-
-            try(BufferedReader reader = new BufferedReader(new FileReader(textFile)))
+            try(ServerSocket serverConnection = new ServerSocket(Integer.parseInt(args[0])))
             {
-                while((line = reader.readLine()) != null)
+                Socket incomingConnection = serverConnection.accept();
+
+                System.out.println("Data Server connected from: " + serverConnection.getInetAddress().getHostAddress());
+
+                String textFile = "src/upson/grant/" + args[1];
+                String line = "";
+                int counter = 0;
+
+                try(BufferedReader reader = new BufferedReader(new FileReader(textFile));
+                    BufferedWriter tweetOutput = new BufferedWriter(new OutputStreamWriter(incomingConnection.getOutputStream())))
                 {
-                    if(counter > 0)
+                    while ((line = reader.readLine()) != null)
                     {
-                        System.out.println(line);
-                        tweetOutput.write(line + "\r\n");
-                        tweetOutput.flush();
+                        if (counter > 0)
+                        {
+                            tweetOutput.write(line + "\r\n");
+                            tweetOutput.flush();
+                        }
+
+                        counter++;
+                        Thread.sleep(1000);
                     }
 
-                    counter++;
-                    Thread.sleep(1000);
+                    incomingConnection.close();
                 }
-
-                incomingConnection.close();
-                serverConnection.close();
             }
-            catch (IOException e)
+            catch(IOException ioException)
             {
-                e.printStackTrace();
+                System.out.println("Error: Connection lost or host is not online.");
+            }
+            catch(InterruptedException iException)
+            {
+                System.out.println("Error: Thread interrupted before sleep could be successful.");
             }
         }
     }
