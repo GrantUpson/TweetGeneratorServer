@@ -42,13 +42,9 @@ public class TweetGenerator
                     incomingConnection.close();
                 }
             }
-            catch(IOException ioException)
+            catch(IOException | InterruptedException exception)
             {
-                System.out.println("Error: Connection lost or host is not online.");
-            }
-            catch(InterruptedException iException)
-            {
-                System.out.println("Error: Thread interrupted before sleep could be successful.");
+                System.out.println("Error: " + exception.getMessage());
             }
         }
     }
