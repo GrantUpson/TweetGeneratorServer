@@ -14,37 +14,43 @@ public class TweetGenerator
         }
         else
         {
-            try(ServerSocket serverConnection = new ServerSocket(Integer.parseInt(args[0])))
+            while(true)
             {
-                Socket incomingConnection = serverConnection.accept();
-
-                System.out.println("Data Server connected from: " + serverConnection.getInetAddress().getHostAddress());
-
-                String textFile = "src/upson/grant/" + args[1];
-                String line = "";
-                int counter = 0;
-
-                try(BufferedReader reader = new BufferedReader(new FileReader(textFile));
-                    BufferedWriter tweetOutput = new BufferedWriter(new OutputStreamWriter(incomingConnection.getOutputStream())))
+                try(ServerSocket serverConnection = new ServerSocket(Integer.parseInt(args[0])))
                 {
-                    while ((line = reader.readLine()) != null)
+                    while(true)
                     {
-                        if (counter > 0)
+                        Socket incomingConnection = serverConnection.accept();
+
+                        System.out.println("Data Server connected from: " + serverConnection.getInetAddress().getHostAddress());
+
+                        String textFile = "src/upson/grant/" + args[1];
+                        String line = "";
+                        int counter = 0;
+
+                        try(BufferedReader reader = new BufferedReader(new FileReader(textFile));
+                            BufferedWriter tweetOutput = new BufferedWriter(new OutputStreamWriter(incomingConnection.getOutputStream())))
                         {
-                            tweetOutput.write(line + "\r\n");
-                            tweetOutput.flush();
+                            while((line = reader.readLine()) != null)
+                            {
+                                if(counter > 0)
+                                {
+                                    tweetOutput.write(line + "\r\n");
+                                    tweetOutput.flush();
+                                }
+
+                                counter++;
+                                Thread.sleep(1000);
+                            }
+
+                            incomingConnection.close();
                         }
-
-                        counter++;
-                        Thread.sleep(1000);
                     }
-
-                    incomingConnection.close();
                 }
-            }
-            catch(IOException | InterruptedException exception)
-            {
-                System.out.println("Error: " + exception.getMessage());
+                catch(IOException | InterruptedException exception)
+                {
+                    System.out.println("Data Server has disconnected");
+                }
             }
         }
     }
