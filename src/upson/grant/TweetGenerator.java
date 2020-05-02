@@ -4,6 +4,11 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/*
+  @author Grant Upson : 385831
+  @author Adib Shadman : 468684
+*/
+
 public class TweetGenerator
 {
     public static void main(String[] args)
